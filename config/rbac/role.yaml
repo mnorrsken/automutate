@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - automutate.snosr.se.my.domain
+  resources:
+  - autopodmanagers
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - automutate.snosr.se.my.domain
+  resources:
+  - autopodmanagers/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - automutate.snosr.se.my.domain
+  resources:
+  - autopodmanagers/status
+  verbs:
+  - get
+  - patch
+  - update

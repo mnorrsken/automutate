@@ -1,0 +1,26 @@
+apiVersion: automutate.snosr.se.my.domain/v1alpha1
+kind: AutoPodManager
+metadata:
+  labels:
+    app.kubernetes.io/name: automutate
+    app.kubernetes.io/managed-by: kustomize
+  name: autopodmanager-sample
+spec:
+  # Select pods with app=nginx label
+  podSelector:
+    matchLabels:
+      app: nginx
+  
+  # Optionally specify a namespace, if not specified uses the namespace of the AutoPodManager
+  namespace: default
+  
+  # Specify which parts of the pod can be modified
+  mutationTargets:
+    - Labels
+    - Annotations
+  
+  # Track pod readiness status
+  statusTracking: PodReadiness
+  
+  # Optionally disable the manager temporarily
+  disabled: false

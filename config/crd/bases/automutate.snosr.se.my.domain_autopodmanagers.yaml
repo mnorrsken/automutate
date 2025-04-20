@@ -1,0 +1,150 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.17.2
+  name: autopodmanagers.automutate.snosr.se.my.domain
+spec:
+  group: automutate.snosr.se.my.domain
+  names:
+    kind: AutoPodManager
+    listKind: AutoPodManagerList
+    plural: autopodmanagers
+    singular: autopodmanager
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: AutoPodManager is the Schema for the autopodmanagers API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: AutoPodManagerSpec defines the desired state of AutoPodManager.
+            properties:
+              disabled:
+                description: Disabled allows temporarily disabling this AutoPodManager
+                type: boolean
+              mutationTargets:
+                description: MutationTargets specifies which parts of the pod objects
+                  can be changed
+                items:
+                  description: MutationTarget defines what parts of a pod can be changed
+                  type: string
+                minItems: 1
+                type: array
+              namespace:
+                description: |-
+                  Namespace specifies the namespace where pods should be selected
+                  If not specified, uses the same namespace as the AutoPodManager object
+                type: string
+              podSelector:
+                description: PodSelector defines which pods this manager should target
+                properties:
+                  matchExpressions:
+                    description: matchExpressions is a list of label selector requirements.
+                      The requirements are ANDed.
+                    items:
+                      description: |-
+                        A label selector requirement is a selector that contains values, a key, and an operator that
+                        relates the key and values.
+                      properties:
+                        key:
+                          description: key is the label key that the selector applies
+                            to.
+                          type: string
+                        operator:
+                          description: |-
+                            operator represents a key's relationship to a set of values.
+                            Valid operators are In, NotIn, Exists and DoesNotExist.
+                          type: string
+                        values:
+                          description: |-
+                            values is an array of string values. If the operator is In or NotIn,
+                            the values array must be non-empty. If the operator is Exists or DoesNotExist,
+                            the values array must be empty. This array is replaced during a strategic
+                            merge patch.
+                          items:
+                            type: string
+                          type: array
+                          x-kubernetes-list-type: atomic
+                      required:
+                      - key
+                      - operator
+                      type: object
+                    type: array
+                    x-kubernetes-list-type: atomic
+                  matchLabels:
+                    additionalProperties:
+                      type: string
+                    description: |-
+                      matchLabels is a map of {key,value} pairs. A single {key,value} in the matchLabels
+                      map is equivalent to an element of matchExpressions, whose key field is "key", the
+                      operator is "In", and the values array contains only "value". The requirements are ANDed.
+                    type: object
+                type: object
+                x-kubernetes-map-type: atomic
+              statusTracking:
+                description: StatusTracking defines what kind of status to track
+                type: string
+            required:
+            - mutationTargets
+            - podSelector
+            - statusTracking
+            type: object
+          status:
+            description: AutoPodManagerStatus defines the observed state of AutoPodManager.
+            properties:
+              managedPods:
+                description: ManagedPods contains status information about the pods
+                  being managed
+                items:
+                  description: PodStatus represents the status information for a managed
+                    pod
+                  properties:
+                    lastUpdateTime:
+                      description: LastUpdateTime shows when this status was last
+                        updated
+                      format: date-time
+                      type: string
+                    name:
+                      description: Name is the name of the pod
+                      type: string
+                    ready:
+                      description: Ready indicates if the pod is in ready state
+                      type: boolean
+                  required:
+                  - lastUpdateTime
+                  - name
+                  - ready
+                  type: object
+                type: array
+              readyPodCount:
+                description: ReadyPodCount shows the number of pods in ready state
+                type: integer
+              totalPodCount:
+                description: TotalPodCount shows the total number of pods being managed
+                type: integer
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- automutate.snosr.se_v1alpha1_autopodmanager.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
